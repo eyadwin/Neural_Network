@@ -1,6 +1,11 @@
 #Complete Neural Network
 #https://victorzhou.com/blog/intro-to-neural-networks/
 #
+# Name	Weight (minus 135)	Height (minus 66)	Gender
+# Alice	    -2	                -1	                  1
+# Bob	    25	                6	                  0
+# Charlie	17	                4	                  0
+# Diana	  -15	              -6	                  1
 import numpy as np
 
 def sigmoid(x):
@@ -29,6 +34,7 @@ class OurNeuralNetwork:
   Instead, read/run it to understand how this specific network works.
   '''
   def __init__(self):
+    #np.random.normal, generate a random number between [-3,3]
     # Weights
     self.w1 = np.random.normal()
     self.w2 = np.random.normal()
@@ -46,6 +52,9 @@ class OurNeuralNetwork:
     # x is a numpy array with 2 elements.
     h1 = sigmoid(self.w1 * x[0] + self.w2 * x[1] + self.b1)
     h2 = sigmoid(self.w3 * x[0] + self.w4 * x[1] + self.b2)
+
+    #note that h1 and h2 are used here, o1 is the output (gender) based on the weight (h1) and height(h2)
+    #w1-w4 are the weights used to tune the values
     o1 = sigmoid(self.w5 * h1 + self.w6 * h2 + self.b3)
     return o1
 
@@ -58,6 +67,10 @@ class OurNeuralNetwork:
     learn_rate = 0.1
     epochs = 1000 # number of times to loop through the entire dataset
 
+    #The zip() function returns an iterator of tuples based on the iterable objects.
+    # If a single iterable is passed, zip() returns an iterator of tuples with each tuple having
+    # only one element. If multiple iterables are passed, zip() returns an iterator of tuples
+    # with each tuple having elements from all the iterables.
     for epoch in range(epochs):
       for x, y_true in zip(data, all_y_trues):
         # --- Do a feedforward (we'll need these values later)
@@ -115,13 +128,14 @@ class OurNeuralNetwork:
         loss = mse_loss(all_y_trues, y_preds)
         print("Epoch %d loss: %.3f" % (epoch, loss))
 
-# Define dataset
+# Define dataset (weight and height)
 data = np.array([
   [-2, -1],  # Alice
   [25, 6],   # Bob
   [17, 4],   # Charlie
   [-15, -6], # Diana
 ])
+#define the output from teh dataset (gender)
 all_y_trues = np.array([
   1, # Alice
   0, # Bob
@@ -129,6 +143,7 @@ all_y_trues = np.array([
   1, # Diana
 ])
 
+#The main start here
 # Train our neural network!
 network = OurNeuralNetwork()
 network.train(data, all_y_trues)
