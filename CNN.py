@@ -1,37 +1,52 @@
+import mnist
 import numpy as np
+from conv import Conv3x3
+from maxpool import MaxPool2
+from softmax import Softmax
 
-class Conv3x3:
-  # A Convolution layer using 3x3 filters.
+# We only use the first 1k testing examples (out of 10k total)
+# in the interest of time. Feel free to change this if you want.
+test_images = mnist.test_images()[:1000]
+test_labels = mnist.test_labels()[:1000]
 
-  def __init__(self, num_filters):
-    self.num_filters = num_filters
+conv = Conv3x3(8)                  # 28x28x1 -> 26x26x8
+pool = MaxPool2()                  # 26x26x8 -> 13x13x8
+softmax = Softmax(13 * 13 * 8, 10) # 13x13x8 -> 10
 
-    # filters is a 3d array with dimensions (num_filters, 3, 3)
-    # We divide by 9 to reduce the variance of our initial values
-    self.filters = np.random.randn(num_filters, 3, 3) / 9
+def forward(image, label):
+  '''
+  Completes a forward pass of the CNN and calculates the accuracy and
+  cross-entropy loss.
+  - image is a 2d numpy array
+  - label is a digit
+  '''
+  # We transform the image from [0, 255] to [-0.5, 0.5] to make it easier
+  # to work with. This is standard practice.
+  out = conv.forward((image / 255) - 0.5)
+  out = pool.forward(out)
+  out = softmax.forward(out)
 
-  def iterate_regions(self, image):
-    '''
-    Generates all possible 3x3 image regions using valid padding.
-    - image is a 2d numpy array
-    '''
-    h, w = image.shape
+  # Calculate cross-entropy loss and accuracy. np.log() is the natural log.
+  loss = -np.log(out[label])
+  acc = 1 if np.argmax(out) == label else 0
 
-    for i in range(h - 2):
-      for j in range(w - 2):
-        im_region = image[i:(i + 3), j:(j + 3)]
-        yield im_region, i, j
+  return out, loss, acc
 
-  def forward(self, input):
-    '''
-    Performs a forward pass of the conv layer using the given input.
-    Returns a 3d numpy array with dimensions (h, w, num_filters).
-    - input is a 2d numpy array
-    '''
-    h, w = input.shape
-    output = np.zeros((h - 2, w - 2, self.num_filters))
+print('MNIST CNN initialized!')
 
-    for im_region, i, j in self.iterate_regions(input):
-      output[i, j] = np.sum(im_region * self.filters, axis=(1, 2))
+loss = 0
+num_correct = 0
+for i, (im, label) in enumerate(zip(test_images, test_labels)):
+  # Do a forward pass.
+  _, l, acc = forward(im, label)
+  loss += l
+  num_correct += acc
 
-    return output
+  # Print stats every 100 steps.
+  if i % 100 == 99:
+    print(
+      '[Step %d] Past 100 steps: Average Loss %.3f | Accuracy: %d%%' %
+      (i + 1, loss / 100, num_correct)
+    )
+    loss = 0
+    num_correct = 0
