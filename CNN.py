@@ -1,3 +1,4 @@
+#https://github.com/vzhou842/cnn-from-scratch
 import mnist
 import numpy as np
 from conv import Conv3x3
