@@ -5,6 +5,12 @@
 # 2- maxpool.py
 # 3- softmax.py
 
+#steps to install MINST
+#in terminal (CMD)
+# 1- pip install python-mnist
+# 2- git clone https://github.com/sorki/python-mnist
+# 3- cd python-mnist
+
 import mnist
 import numpy as np
 from conv import Conv3x3
@@ -13,8 +19,9 @@ from softmax import Softmax
 
 # We only use the first 1k testing examples (out of 10k total)
 # in the interest of time. Feel free to change this if you want.
-test_images = mnist.test_images()[:1000]
-test_labels = mnist.test_labels()[:1000]
+
+test_images = mnist.MNIST('data/').test_images()[:1000]
+test_labels = mnist.MNIST('data/').test_labels()[:1000]
 
 conv = Conv3x3(8)                  # 28x28x1 -> 26x26x8
 pool = MaxPool2()                  # 26x26x8 -> 13x13x8
