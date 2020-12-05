@@ -1,4 +1,10 @@
 #https://github.com/vzhou842/cnn-from-scratch
+###############################################3
+#Uses 3 files
+# 1- conv.py
+# 2- maxpool.py
+# 3- softmax.py
+
 import mnist
 import numpy as np
 from conv import Conv3x3
