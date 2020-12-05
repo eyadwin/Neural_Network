@@ -10,6 +10,7 @@
 # 1- pip install python-mnist
 # 2- git clone https://github.com/sorki/python-mnist
 # 3- cd python-mnist
+# 4- ./mnist_get_data.sh
 
 import mnist
 import numpy as np
@@ -19,10 +20,15 @@ from softmax import Softmax
 
 # We only use the first 1k examples of each set in the interest of time.
 # Feel free to change this if you want.
-train_images = mnist.MNIST('data/').train_images[:1000]
-train_labels = mnist.MNIST('data/').train_labels[:1000]
-test_images = mnist.MNIST('data/').test_images[:1000]
-test_labels = mnist.MNIST('data/').test_labels[:1000]
+#train_images = mnist.MNIST('data/').train_images[:1000]
+#train_labels = mnist.MNIST('data/').train_labels[:1000]
+#test_images = mnist.MNIST('data/').test_images[:1000]
+#test_labels = mnist.MNIST('data/').test_labels[:1000]
+
+train_images = mnist.train_images()[:1000]
+train_labels = mnist.train_labels()[:1000]
+test_images = mnist.test_images()[:1000]
+test_labels = mnist.test_labels()[:1000]
 
 conv = Conv3x3(8)                  # 28x28x1 -> 26x26x8
 pool = MaxPool2()                  # 26x26x8 -> 13x13x8
@@ -76,9 +82,9 @@ for epoch in range(3):
   print('--- Epoch %d ---' % (epoch + 1))
 
   # Shuffle the training data
-  permutation = np.random.permutation(len(train_images))
-  train_images = train_images[permutation]
-  train_labels = train_labels[permutation]
+#  permutation = np.random.permutation(len(train_images))
+#  train_images = train_images[permutation]
+#  train_labels = train_labels[permutation]
 
   # Train!
   loss = 0
